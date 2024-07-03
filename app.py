@@ -111,13 +111,62 @@ def singleMember(member_id):
     elif request.method == "DELETE":
         mongo.db.get_collection("members").delete_one({"_id": ObjectId(member_id)})
         return {"members": "Member deleted"}
+    else:
+        abort(405)
 
 
 @app.route("/trainers", methods=["GET", "POST"])
-@jwt_required
+@jwt_required()
 def trainers():
-    if request.method("GET"):
-        trainers= mongo.db.get_collection("trainers").find()
+    if request.method == "GET":
+        trainers = mongo.db.get_collection("trainers").find()
+        list_trainers = list(trainers)
+        list_trainers = list(map(serialize_mongo_doc, list_trainers))
+        return list_trainers
+    elif request.method == "POST":
+        new_trainer = {
+            "name": request.form["name"],
+            "phno": request.form["phno"],
+            "email": request.form["email"],
+            "speciality": request.form["speciality"],
+        }
+        other_trainer = mongo.db.get_collection("trainers").find(
+            {"phno": new_trainer["phno"]}
+        )
+        if len(list(other_trainer)) > 0:
+            return {"message": "member already exists"}
+        trainerdoc = mongo.db.get_collection("trainers").insert_one(new_trainer)
+        return {"message": "Trainer added", "trainer_id": str(trainerdoc.inserted_id)}
+    else:
+        abort(405)
+
+
+@app.route("/trainers/<trainer_id>", methods=["GET", "PUT", "DELETE"])
+@jwt_required()
+def singleTrainer(trainer_id):
+    trainer = mongo.db.get_collection("trainers").find_one(
+        {"_id": ObjectId(trainer_id)}
+    )
+    if trainer is None:
+        return {"message": "Trainer not found"}, 404
+    if request.method == "GET":
+        return serialize_mongo_doc(trainer)
+    elif request.method == "PUT":
+        updated_trainer = {
+            "name": request.form["name"],
+            "phno": request.form["phno"],
+            "email": request.form["email"],
+            "speciality": request.form["speciality"],
+        }
+        mongo.db.get_collection("trainers").update_one(
+            {"_id": ObjectId(trainer_id)}, {"$set": updated_trainer}
+        )
+        return {"message": "Updated Successfully"}
+    elif request.method == "DELETE":
+        mongo.db.get_collection("trainers").delete_one({"_id": ObjectId(trainer_id)})
+        return {"message": "Trainer Deleted"}
+    else:
+        abort(405)
 
 
 if __name__ == "__main__":
