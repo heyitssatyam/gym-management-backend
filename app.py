@@ -169,5 +169,30 @@ def singleTrainer(trainer_id):
         abort(405)
 
 
+@app.route("/equipments", methods=["GET"])
+@jwt_required()
+def allequipments():
+    equipments = mongo.db.get_collection("equipments").find()
+    if equipments is None:
+        return {"message": "Equipment not found"}
+    if request.method == "GET":
+        list_equipments = list(equipments)
+        list_equipments = list(map(serialize_mongo_doc, list_equipments))
+        return list_equipments
+    else:
+        abort(405)
+
+
+@app.route("/equipments/<int:equipment_id>", methods=["GET"])
+@jwt_required()
+def singleequipment(equipment_id):
+    equipement = mongo.db.get_collection("equipments").find_one(
+        {"id": equipment_id}, {"name": equipment_id, "type": equipment_id}
+    )
+    if equipement is None:
+        return {"message": "Equipment not found"}
+    return serialize_mongo_doc(equipement)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
