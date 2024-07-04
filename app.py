@@ -1,4 +1,14 @@
-from flask import Flask, request, jsonify, abort
+from flask import (
+    Flask,
+    request,
+    jsonify,
+    abort,
+    render_template,
+    session,
+    redirect,
+    flash,
+)
+from flask_session import Session
 from flask_pymongo import PyMongo
 from secrets_1 import MONGODB_URI, JWT_SECRET_KEY
 from hashlib import sha256
@@ -12,23 +22,49 @@ from helpers import serialize_mongo_doc
 from bson.objectid import ObjectId
 from datetime import timedelta, datetime
 from flask_cors import CORS
+from functools import wraps
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="./static")
 CORS(app, supports_credentials=True)
 
 app.config["MONGO_URI"] = MONGODB_URI
 app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
+app.config["SESSION_PERMANANT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=1)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
 
 mongo = PyMongo(app)
 jwt = JWTManager(app)
+Session(app)
+
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "_id" not in session:
+            flash("Login Required")
+            return redirect("/")
+        return f(*args, **kwargs)
+
+    return decorated_function
 
 
 @app.route("/")
 def home():
-    return "Hello niggas"
+    return render_template("index.html", name="home")
+
+
+@app.route("/dashboard")
+@login_required
+def dashboard():
+    return render_template("dashboard.html", name="dashboard")
+
+
+@app.route("/about")
+def about():
+    return render_template("about.html", name="about")
 
 
 @app.route("/login", methods=["POST"])
@@ -42,20 +78,22 @@ def login():
         {"email": email, "password": password_hash}
     )
     if doc is not None:
-        access_key = create_access_token(identity=doc["username"])
-        curDate = datetime.now()
-        expDate = curDate + timedelta(days=1)
-        return {
-            "message": "Successful login",
-            "access_token": access_key,
-            "expires_at": datetime.isoformat(expDate),
-        }
+        session["username"] = doc["username"]
+        session["_id"] = str(doc["_id"])
+        return redirect("/dashboard")
     else:
-        return {"message": "Login failed"}, 401
+        flash("Invalid Username / Password")
+        return redirect("/")
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
 
 
 @app.route("/members", methods=["GET", "POST"])
-@jwt_required()
+@login_required
 def members():
     if request.method == "GET":
         members = mongo.db.get_collection("members").find()
@@ -86,7 +124,7 @@ def members():
 
 
 @app.route("/members/<member_id>", methods=["GET", "PUT", "DELETE"])
-@jwt_required()
+@login_required
 def singleMember(member_id):
     member = mongo.db.get_collection("members").find_one({"_id": ObjectId(member_id)})
     if member is None:
@@ -116,7 +154,7 @@ def singleMember(member_id):
 
 
 @app.route("/trainers", methods=["GET", "POST"])
-@jwt_required()
+@login_required
 def trainers():
     if request.method == "GET":
         trainers = mongo.db.get_collection("trainers").find()
@@ -142,7 +180,7 @@ def trainers():
 
 
 @app.route("/trainers/<trainer_id>", methods=["GET", "PUT", "DELETE"])
-@jwt_required()
+@login_required
 def singleTrainer(trainer_id):
     trainer = mongo.db.get_collection("trainers").find_one(
         {"_id": ObjectId(trainer_id)}
@@ -170,7 +208,7 @@ def singleTrainer(trainer_id):
 
 
 @app.route("/equipments", methods=["GET"])
-@jwt_required()
+@login_required
 def allequipments():
     equipments = mongo.db.get_collection("equipments").find()
     if equipments is None:
@@ -184,7 +222,7 @@ def allequipments():
 
 
 @app.route("/equipments/<int:equipment_id>", methods=["GET"])
-@jwt_required()
+@login_required
 def singleequipment(equipment_id):
     equipement = mongo.db.get_collection("equipments").find_one(
         {"id": equipment_id}, {"name": equipment_id, "type": equipment_id}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block head %}
+<link rel="stylesheet" href="/static/styles/dashboard.css">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <aside class="sidebar">
+        <ul>
+            <li><a href="#" id="membership">Apply for Membership</a></li>
+            <li><a href="#" id="view-members">View members</a></li>
+            <li><a href="#" id="trainer">Apply for Trainer</a></li>
+            <li><a href="#" id="classes">Apply for Classes</a></li>
+            <li><a href="#" id="payments">Check Payments</a></li>
+            <li><a href="#" id="equipment">View Equipment</a></li>
+        </ul>
+    </aside>
+    <main class="content" id="content">
+        <h2>Welcome to the Gym Management Dashboard</h2>
+        <p>Select an option from the menu to get started.</p>
+        <div id="members-div"></div>
+    </main>
+</div>
+
+<script src="/static/scripts/dashboard.js"></script>
+
+{% endblock %}
