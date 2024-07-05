@@ -1,5 +1,6 @@
 .members-table {
     width: 100%;
+    border-collapse: collapse;
 }
 
 .members-table thead {
@@ -14,6 +15,10 @@
 .members-table tbody td {
     padding: 0.3rem;
     text-align: center;
+}
+
+.members-table tbody tr:hover {
+    background-color: rgba(179, 204, 225, 0.463);
 }
 
 .members-table tbody td button {

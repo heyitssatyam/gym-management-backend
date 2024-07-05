@@ -11,8 +11,8 @@
         <ul>
             <li><a href="/dashboard/members/add" id="membership">Apply for Membership</a></li>
             <li><a href="/dashboard/members" id="view-members">View Members</a></li>
-            <li><a href="/dashboard/applytrainers" id="trainer">Apply for Trainer</a></li>
-            <li><a href="/dashboard/viewtrainers" id="view-members">View Trainers</a></li>
+            <li><a href="/dashboard/trainers/add" id="trainer">Apply for Trainer</a></li>
+            <li><a href="/dashboard/trainers" id="view-trainers">View Trainers</a></li>
             <li><a href="#" id="classes">Apply for Classes</a></li>
             <li><a href="#" id="payments">Check Payments</a></li>
             <li><a href="/dashboard/equipments" id="equipment">View Equipment</a></li>
@@ -21,7 +21,7 @@
     <main class="content" id="content">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
-        <p style="color: black;text-align:center;">{{messages[0]}}</p>
+        <p style="color: rgb(253, 16, 16);text-align:center;">{{messages[0]}}</p>
         {% endif %}
         {% endwith %}
         {% block main %}

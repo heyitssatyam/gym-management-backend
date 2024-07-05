@@ -1,4 +1,46 @@
 {% extends "dashboard.html" %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/viewmembers.css') }}">
+{% endblock %}
 {% block main %}
+<h2>All Trainers</h2>
+<small>Here is a list of all the Trainers</small>
+<table class="members-table" cellspacing=5 cellpadding=5 border="1px">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone no</th>
+            <th>Speciality</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for trainer in trainers %}
+        <tr>
+            <td>
+                {{trainer["name"]}}
+            </td>
+            <td>
+                {{trainer["email"]}}
+            </td>
+            <td>
+                {{trainer["phno"]}}
+            </td>
+            <td>
+                {{trainer["speciality"]}}
+            </td>
+            <td>
+                <a href="/dashboard/trainers/{{trainer['_id']}}">
+                    <button>View</button>
+                </a>
+            </td>
+
+        </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
 
 {% endblock %}

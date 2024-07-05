@@ -126,7 +126,7 @@ def addmembers():
     return render_template("addmembers.html")
 
 
-@app.route("/members/<member_id>", methods=["GET", "PUT", "DELETE"])
+@app.route("/dashboard/members/<member_id>", methods=["GET", "PUT", "DELETE"])
 @login_required
 def singleMember(member_id):
     member = mongo.db.get_collection("members").find_one({"_id": ObjectId(member_id)})
@@ -156,14 +156,14 @@ def singleMember(member_id):
         abort(405)
 
 
-@app.route("/trainers", methods=["GET", "POST"])
+@app.route("/dashboard/trainers", methods=["GET", "POST"])
 @login_required
 def trainers():
     if request.method == "GET":
         trainers = mongo.db.get_collection("trainers").find()
         list_trainers = list(trainers)
         list_trainers = list(map(serialize_mongo_doc, list_trainers))
-        return list_trainers
+        return render_template("viewtrainer.html", trainers=list_trainers)
     elif request.method == "POST":
         new_trainer = {
             "name": request.form["name"],
@@ -175,14 +175,22 @@ def trainers():
             {"phno": new_trainer["phno"]}
         )
         if len(list(other_trainer)) > 0:
-            return {"message": "member already exists"}
+            flash("Trainer already exists")
+            return redirect("/dashboard/trainers")
         trainerdoc = mongo.db.get_collection("trainers").insert_one(new_trainer)
-        return {"message": "Trainer added", "trainer_id": str(trainerdoc.inserted_id)}
+        flash("Trainer inserted")
+        return redirect("/dashboard/trainers")
     else:
         abort(405)
 
 
-@app.route("/trainers/<trainer_id>", methods=["GET", "PUT", "DELETE"])
+@app.route("/dashboard/trainers/add")
+@login_required
+def addtrainers():
+    return render_template("addtrainers.html")
+
+
+@app.route("/dashboard/trainers/<trainer_id>", methods=["GET", "PUT", "DELETE"])
 @login_required
 def singleTrainer(trainer_id):
     trainer = mongo.db.get_collection("trainers").find_one(
@@ -217,11 +225,11 @@ def allequipments():
     if equipments is None:
         flash("Equipment not found")
         return redirect("/dashboard/equipments")
-        
+
     if request.method == "GET":
         list_equipments = list(equipments)
         list_equipments = list(map(serialize_mongo_doc, list_equipments))
-        return render_template("equipments.html", equipments = list_equipments)
+        return render_template("equipments.html", equipments=list_equipments)
     else:
         abort(405)
 

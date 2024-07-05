@@ -90,6 +90,7 @@ header {
     height: 80vh;
     width: 75%;
     backdrop-filter: 2px;
+    overflow: hidden;
 }
 
 .sidebar {
