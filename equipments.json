@@ -3,84 +3,84 @@
         "name": "Dumbbell",
         "id": 1,
         "type": "free weight",
-        "url" : "./static/dumbells.webp"
+        "url": "/static/dumbells.webp"
     },
     {
         "name": "Rowing machines",
         "id": 2,
         "type": "cardio and strength",
-        "url" : "./static/rowingmachine.webp"
+        "url": "/static/rowingmachine.webp"
     },
     {
         "name": "Treadmill",
         "id": 3,
         "type": "cardio",
-        "url" : "./static/tredmill.webp"
+        "url": "/static/tredmill.webp"
     },
     {
         "name": "Bench",
         "id": 4,
         "type": "Weight Training",
-        "url" : "./static/bench.webp"
+        "url": "/static/bench.webp"
     },
     {
         "name": "Stationary bicycle",
         "id": 5,
         "type": "cardio",
-        "url" : "./static/stationarybicycle.webp"
+        "url": "/static/stationarybicycle.webp"
     },
     {
         "name": "Barbell",
         "id": 6,
         "type": "free weight",
-        "url" : "./static/barbel.webp"
+        "url": "/static/barbel.webp"
     },
     {
         "name": "Leg press",
         "id": 7,
         "type": "Weight Training",
-        "url" : "./static/legpress.webp"
+        "url": "/static/legpress.webp"
     },
     {
         "name": "Leg Curl machine",
         "id": 8,
         "type": "Weight Training",
-        "url" : "./static/legcurl.webp"
+        "url": "/static/legcurl.webp"
     },
     {
         "name": "Bench press",
         "id": 9,
         "type": "Weight Training",
-        "url": "./static/benchpress.webp"
+        "url": "/static/benchpress.webp"
     },
     {
         "name": "Pull-down",
         "id": 10,
         "type": "Weight Training",
-        "url": "./static/pulldown.webp"
+        "url": "/static/pulldown.webp"
     },
     {
         "name": "Stability ball",
         "id": 11,
         "type": "core training",
-        "url": "./static/stabilityball.webp"
+        "url": "/static/stabilityball.webp"
     },
     {
         "name": "Resistance band",
         "id": 12,
         "type": "strength training",
-        "url": "./static/resistanceband.webp"
+        "url": "/static/resistanceband.webp"
     },
     {
         "name": "Cable machines",
         "id": 13,
         "type": "strength training",
-        "url": "./static/cablemachine.webp"
+        "url": "/static/cablemachine.webp"
     },
     {
         "name": "Dipping Bars",
         "id": 14,
         "type": "strength training",
-        "url": "./static/dippingbars.webp"
+        "url": "/static/dippingbars.webp"
     }
 ]

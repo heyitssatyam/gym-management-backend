@@ -1,0 +1,19 @@
+{% extends "dashboard.html" %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/viewequipments.css')}}">
+{% endblock %}
+{% block main %}
+<h2>All Equipment</h2>
+<small>Here's the list of all the Equipments</small>
+{% for equipment in equipments %}
+<!-- <p>{{equipment["name"]}} - {{equipment["type"]}}</p> -->
+<div class="card">
+    <div class="img-container"><img src="{{equipment['url']}}" alt="equipment-imgs"></div>
+    <div class="img-desc">
+        <p class="bold">{{equipment["name"]}}</p>
+        <p>{{equipment["type"]}}</p>
+    </div>
+</div>
+
+{% endfor %}
+{% endblock %}

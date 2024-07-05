@@ -1,8 +1,46 @@
 {% extends "dashboard.html" %}
-{% block main %}
-{% for member in members %}
-<p>{{member["name"]}}</p>
-{% endfor %}
 
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/viewmembers.css') }}">
+{% endblock %}
+{% block main %}
+<h2>All Members</h2>
+<small>Here is a list of all the members</small>
+<table class="members-table" cellspacing=5 cellpadding=5 border="1px">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone no</th>
+            <th>Speciality</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for member in members %}
+        <tr>
+            <td>
+                {{member["name"]}}
+            </td>
+            <td>
+                {{member["email"]}}
+            </td>
+            <td>
+                {{member["phno"]}}
+            </td>
+            <td>
+                {{member["type"]}}
+            </td>
+            <td>
+                <a href="/dashboard/members/{{member['_id']}}">
+                    <button>View</button>
+                </a>
+            </td>
+
+        </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
 
 {% endblock %}

@@ -1,0 +1,31 @@
+.members-table {
+    width: 100%;
+}
+
+.members-table thead {
+    background-color: rgb(82, 35, 35);
+    color: white;
+}
+
+.members-table thead th {
+    padding: 1rem;
+}
+
+.members-table tbody td {
+    padding: 0.3rem;
+    text-align: center;
+}
+
+.members-table tbody td button {
+    padding: 0.5rem;
+    background-color: rgb(82, 35, 35);
+    color: white;
+    border-radius: 0.2rem;
+    border: 1px solid rgb(82, 35, 35);
+    transition: all ease-in-out 150ms;
+}
+
+.members-table tbody td button:hover {
+    background-color: white;
+    color: black;
+}

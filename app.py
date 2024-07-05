@@ -81,6 +81,7 @@ def login():
 
 
 @app.route("/logout")
+@login_required
 def logout():
     session.clear()
     return redirect("/")
@@ -120,6 +121,7 @@ def members():
 
 
 @app.route("/dashboard/members/add")
+@login_required
 def addmembers():
     return render_template("addmembers.html")
 
@@ -208,28 +210,31 @@ def singleTrainer(trainer_id):
         abort(405)
 
 
-@app.route("/equipments", methods=["GET"])
+@app.route("/dashboard/equipments", methods=["GET"])
 @login_required
 def allequipments():
     equipments = mongo.db.get_collection("equipments").find()
     if equipments is None:
-        return {"message": "Equipment not found"}
+        flash("Equipment not found")
+        return redirect("/dashboard/equipments")
+        
     if request.method == "GET":
         list_equipments = list(equipments)
         list_equipments = list(map(serialize_mongo_doc, list_equipments))
-        return list_equipments
+        return render_template("equipments.html", equipments = list_equipments)
     else:
         abort(405)
 
 
-@app.route("/equipments/<int:equipment_id>", methods=["GET"])
+@app.route("/dashboard/equipments/<int:equipment_id>", methods=["GET"])
 @login_required
 def singleequipment(equipment_id):
     equipement = mongo.db.get_collection("equipments").find_one(
         {"id": equipment_id}, {"name": equipment_id, "type": equipment_id}
     )
     if equipement is None:
-        return {"message": "Equipment not found"}
+        flash("Equipment Not found")
+        return redirect("/dashboard/equipments")
     return serialize_mongo_doc(equipement)
 
 

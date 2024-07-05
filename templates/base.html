@@ -17,13 +17,16 @@
         <nav class="navigation">
             <a class="nav-item" href="/">Home</a>
             <a class="nav-item" href="/about">About</a>
-            <a class="nav-item" href="#">Services</a>
-            <a class="nav-item" href="#">Contact</a>
+            <!-- <a class="nav-item" href="#"></a> -->
+            {% if "_id" in session %}
+            <a class="nav-item" href="/dashboard">Dashboard</a>
+            {% endif %}
             <!-- <button class="btnLogin-popup">Login</button> -->
             {% if "_id" in session %}
             <a href="/logout"><button class="btnLogout-popup">Logout</button></a>
             {% else %}
-            <button class="btnLogin-popup">Login</button>
+
+            <a href="/#login"><button class="btnLogin-popup">Login</button></a>
             {% endif %}
 
         </nav>

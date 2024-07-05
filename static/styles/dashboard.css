@@ -86,8 +86,9 @@ header {
 
 .dashboard-container {
     display: flex;
+    margin-top: 3.5rem;
     height: 80vh;
-    width: 60vw;
+    width: 75%;
     backdrop-filter: 2px;
 }
 
@@ -117,9 +118,13 @@ header {
 }
 
 .content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
     flex-grow: 1;
     background: #fff;
     padding: 20px;
+    overflow-y: scroll;
 }
 
 .content h2 {
