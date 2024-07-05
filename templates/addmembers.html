@@ -1,0 +1,14 @@
+{% extends "dashboard.html" %}
+{% block main %}
+<form action="/dashboard/members" method="post">
+    <input type="text" name="name" id="name" placeholder="Enter your name">
+    <input type="email" name="email" id="email" placeholder="Enter your email">
+    <input type="tel" name="phno" id="phno" placeholder="Enter your phone number">
+    <input type="date" name="dob" id="dob" placeholder="Enter your dob">
+    <input type="text" name="address" id="address" placeholder="Enter your address">
+    <input type="text" name="type" id="type" placeholder="Enter your speciality">
+    <input type="date" name="joindate" id="joindate" placeholder="Enter JD">
+    <input type="date" name="expirydate" id="expirydate" placeholder="Enter EXPD">
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}

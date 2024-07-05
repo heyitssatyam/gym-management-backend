@@ -1,0 +1,8 @@
+{% extends "dashboard.html" %}
+{% block main %}
+{% for member in members %}
+<p>{{member["name"]}}</p>
+{% endfor %}
+
+
+{% endblock %}

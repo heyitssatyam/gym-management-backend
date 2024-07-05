@@ -12,12 +12,7 @@ from flask_session import Session
 from flask_pymongo import PyMongo
 from secrets_1 import MONGODB_URI, JWT_SECRET_KEY
 from hashlib import sha256
-from flask_jwt_extended import (
-    create_access_token,
-    get_jwt_identity,
-    jwt_required,
-    JWTManager,
-)
+
 from helpers import serialize_mongo_doc
 from bson.objectid import ObjectId
 from datetime import timedelta, datetime
@@ -36,7 +31,6 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=1)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
 
 mongo = PyMongo(app)
-jwt = JWTManager(app)
 Session(app)
 
 
@@ -92,14 +86,14 @@ def logout():
     return redirect("/")
 
 
-@app.route("/members", methods=["GET", "POST"])
+@app.route("/dashboard/members", methods=["GET", "POST"])
 @login_required
 def members():
     if request.method == "GET":
         members = mongo.db.get_collection("members").find()
         list_members = list(members)
         list_members = list(map(serialize_mongo_doc, list_members))
-        return list_members
+        return render_template("viewmembers.html", members=list_members)
     elif request.method == "POST":
         new_member = {
             "name": request.form["name"],
@@ -115,12 +109,19 @@ def members():
             {"phno": new_member["phno"]}
         )
         if len(list(other_members)) > 0:
-            return {"message": "User already exists"}
+            flash("User already exists")
+            return redirect("/dashboard/members")
 
         memberdoc = mongo.db.get_collection("members").insert_one(new_member)
-        return {"message": "Member inserted!", "member_id": str(memberdoc.inserted_id)}
+        flash("Members Inserted")
+        return redirect("/dashboard/members")
     else:
         abort(405)
+
+
+@app.route("/dashboard/members/add")
+def addmembers():
+    return render_template("addmembers.html")
 
 
 @app.route("/members/<member_id>", methods=["GET", "PUT", "DELETE"])
