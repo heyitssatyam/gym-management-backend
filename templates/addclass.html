@@ -1,0 +1,34 @@
+{% extends 'dashboard.html' %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/addmembers.css') }}">
+{% endblock %}
+
+{% block main %}
+<h2>Add classes</h2>
+<small>Add a new class</small>
+
+<form action="/dashboard/classes" method="post">
+    <div class="form-group">
+        <label for="name">Class Name:</label>
+        <input type="text" name="name" id="name" placeholder="Enter the class" required>
+    </div>
+    <div class="form-group">
+        <label for="date">Schedule:</label>
+        <input type="date" name="date" id="date" placeholder="Enter class date" required>
+    </div>
+    <div class="form-group">
+        <label for="duration">Duration:</label>
+        <input type="text" name="duration" id="duration" placeholder="Enter class duration" required>
+    </div>
+    <div class="form-group">
+        <label for="type">Trainer:</label>
+        <select name="type" id="type">
+            {% for trainer in trainers %}
+            <option value="{{trainer['_id']}}">{{trainer['name']}} - {{trainer['speciality']}} </option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}

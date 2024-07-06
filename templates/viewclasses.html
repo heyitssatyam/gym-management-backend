@@ -1,41 +1,45 @@
 {% extends "dashboard.html" %}
-
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/viewmembers.css') }}">
 {% endblock %}
 {% block main %}
-<h2>All Trainers</h2>
-<small>Here is a list of all the Trainers</small>
+<h2>All Classes</h2>
+<small>Heres the list of all the classes!</small>
+
 <table class="members-table" cellspacing=5 cellpadding=5 border="1px">
     <thead>
         <tr>
             <th>Name</th>
-            <th>Email</th>
-            <th>Phone no</th>
-            <th>Speciality</th>
+            <th>Schedule</th>
+            <th>duration</th>
+            <th>trainer</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        {% for trainer in trainers %}
+        {% for class in classes %}
         <tr>
             <td>
+                {{class["name"]}}
+            </td>
+            <td>
+                {{class["schedule"]}}
+            </td>
+            <td>
+                {{class["duration"]}}
+            </td>
+            <td>
+                {% for trainer in trainers %}
+                {% if trainer["_id"] == class["trainer_id"] %}
                 {{trainer["name"]}}
+                {% endif %}
+                {% endfor %}
             </td>
             <td>
-                {{trainer["email"]}}
-            </td>
-            <td>
-                {{trainer["phno"]}}
-            </td>
-            <td>
-                {{trainer["speciality"]}}
-            </td>
-            <td>
-                <a href="/dashboard/trainers/{{trainer['_id']}}">
-                    <button>View</button>
+                <button>View</button>
                 </a>
             </td>
+
         </tr>
         {% endfor %}
 

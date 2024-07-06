@@ -218,6 +218,41 @@ def singleTrainer(trainer_id):
         abort(405)
 
 
+@app.route("/dashboard/classes", methods=["GET", "POST"])
+def classes():
+    classes = mongo.db.get_collection("classes").find()
+    trainers = mongo.db.trainers.find()
+    list_trainers = list(map(serialize_mongo_doc, list(trainers)))
+    if request.method == "GET":
+        list_classes = list(classes)
+        list_classes = list(map(serialize_mongo_doc, list_classes))
+        return render_template(
+            "viewclasses.html", classes=list_classes, trainers=list_trainers
+        )
+    elif request.method == "POST":
+        name = request.form.get("name")
+        schedule = request.form.get("schedule")
+        duration = request.form.get("duration")
+        trainer_id = request.form.get("trainer_id")
+        new_class = {
+            "name": name,
+            "schedule": schedule,  # schedule is None in db
+            "duration": duration,
+            "trainer_id": ObjectId(trainer_id),
+        }
+        classesdoc = mongo.db.get_collection("classes").insert_one(new_class)
+        flash("Classes inserted")
+        return redirect("/dashboard/classes")
+    else:
+        abort(405)
+
+
+@app.route("/dashboard/classes/add")
+def addclasses():
+    trainers = mongo.db.trainers.find()
+    list_trainers = list(map(serialize_mongo_doc, list(trainers)))
+    return render_template("addclass.html", trainers=list_trainers)
+
 @app.route("/dashboard/equipments", methods=["GET"])
 @login_required
 def allequipments():

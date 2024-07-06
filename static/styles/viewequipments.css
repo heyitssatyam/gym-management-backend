@@ -5,11 +5,12 @@
     background-color: rgb(128, 50, 50);
     border-radius: 2rem;
     gap: 0.5rem;
+    width: 90%;
 }
 
 .img-container img {
     height: 100%;
-    width: 100%;
+    width: 95%;
     aspect-ratio: 16 / 9;
     object-fit: fit;
     border-radius: 2rem;
