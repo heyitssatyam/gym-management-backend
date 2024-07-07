@@ -242,6 +242,9 @@ def addTrainer(classInfo):
     trainer = mongo.db.get_collection("trainers").find_one(
         {"_id": classInfo["trainer_id"]}
     )
+    if trainer is None:
+        classInfo["trainer"] = "Trainer not found"
+        return classInfo
     classInfo["trainer"] = trainer["name"]
     return classInfo
 
@@ -251,6 +254,9 @@ def addMember(classInfo):
     member = mongo.db.get_collection("members").find_one(
         {"_id": classInfo["member_id"]}
     )
+    if member is None:
+        classInfo["member"] = "Member not found"
+        return classInfo
     classInfo["member"] = member["name"]
     return classInfo
 
