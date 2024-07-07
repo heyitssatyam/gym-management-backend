@@ -1,0 +1,38 @@
+{% extends 'dashboard.html' %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/addmembers.css') }}">
+{% endblock %}
+
+{% block main %}
+<h2>Add Payments</h2>
+<small>Add a new payment</small>
+
+<form action="/dashboard/payments" method="post">
+    <div class="form-group">
+        <label for="member_id">Member Name:</label>
+        <select name="member_id" id="member_id">
+            {% for member in members %}
+            <option value="{{member['_id']}}">{{member['name']}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="amount">Amount:</label>
+        <input type="number" name="amount" id="amount" placeholder="Enter the amount" required>
+    </div>
+    <div class="form-group">
+        <label for="paydate">Payment Date:</label>
+        <input type="date" name="paydate" id="paydate" required>
+    </div>
+    <div class="form-group">
+        <label for="paymethod">Payment Method:</label>
+        <select name="paymethod" id="paymethod">
+            <option value="upi">UPI</option>
+            <option value="card">Card</option>
+            <option value="cash">Cash</option>
+        </select>
+    </div>
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}

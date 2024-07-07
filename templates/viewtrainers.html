@@ -1,42 +1,41 @@
 {% extends "dashboard.html" %}
+
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/viewmembers.css') }}">
 {% endblock %}
 {% block main %}
-<h2>All Classes</h2>
-<small>Heres the list of all the classes!</small>
-
+<h2>All Trainers</h2>
+<small>Here is a list of all the Trainers</small>
 <table class="members-table" cellspacing=5 cellpadding=5 border="1px">
     <thead>
         <tr>
             <th>Name</th>
-            <th>Schedule</th>
-            <th>duration</th>
-            <th>trainer</th>
+            <th>Email</th>
+            <th>Phone no</th>
+            <th>Speciality</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        {% for class in classes %}
+        {% for trainer in trainers %}
         <tr>
             <td>
-                {{class["name"]}}
+                {{trainer["name"]}}
             </td>
             <td>
-                {{class["schedule"]}}
+                {{trainer["email"]}}
             </td>
             <td>
-                {{class["duration"]}}
+                {{trainer["phno"]}}
             </td>
             <td>
-                {{class['trainer']}}
+                {{trainer["speciality"]}}
             </td>
             <td>
-                <a href="/dashboard/classes/{{class['_id']}}">
+                <a href="/dashboard/trainers/{{trainer['_id']}}">
                     <button>View</button>
                 </a>
             </td>
-
         </tr>
         {% endfor %}
 

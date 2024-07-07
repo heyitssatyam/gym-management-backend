@@ -1,0 +1,36 @@
+.member-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.member-table thead {
+    background-color: rgb(82, 35, 35);
+    color: white;
+}
+
+.member-table thead th {
+    padding: 1rem;
+}
+
+.member-table tbody td {
+    padding: 0.3rem;
+    text-align: center;
+}
+
+.member-table tbody tr:hover {
+    background-color: rgba(179, 204, 225, 0.463);
+}
+
+.member-table tbody td button {
+    padding: 0.5rem;
+    background-color: rgb(82, 35, 35);
+    color: white;
+    border-radius: 0.2rem;
+    border: 1px solid rgb(82, 35, 35);
+    transition: all ease-in-out 150ms;
+}
+
+.member-table tbody td button:hover {
+    background-color: white;
+    color: black;
+}

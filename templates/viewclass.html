@@ -1,0 +1,38 @@
+{% extends 'dashboard.html' %}
+{% block styles %}
+<link rel="stylesheet" href="{{url_for('static', filename='styles/viewmember.css')}}">
+{% endblock %}
+{% block main %}
+<h2>Class Information</h2>
+<table class="member-table" cellpadding=5 cellspacing=5 border="2px">
+    <thead>
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Class Name</strong></td>
+            <td>{{classes['name']}}</td>
+        </tr>
+        <tr>
+            <td><strong>Schedule</strong></td>
+            <td>{{classes['schedule']}}</td>
+        </tr>
+        <tr>
+            <td><strong>duration</strong></td>
+            <td>{{classes['duration']}}</td>
+        </tr>
+        <tr>
+            <td><strong>Trainer Name</strong></td>
+            <td>{{classes['trainer']}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<a class="remove-link" href="/dashboard/classes/{{classes['_id']}}/delete"><button
+        onclick="return confirm('Are you sure you want to delete?')" type="submit">Remove
+        class</button></a>
+{% endblock %}

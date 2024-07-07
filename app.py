@@ -133,7 +133,7 @@ def singleMember(member_id):
     if member is None:
         return {"message": "Member not found"}, 404
     if request.method == "GET":
-        return serialize_mongo_doc(member)
+        return render_template("viewmember.html", member=member)
     elif request.method == "PUT":
         updated_member = {
             "name": request.form["name"],
@@ -156,6 +156,15 @@ def singleMember(member_id):
         abort(405)
 
 
+@app.route("/dashboard/members/<member_id>/delete")
+@login_required
+def deletemember(member_id):
+    member = mongo.db.get_collection("members").find_one({"_id": ObjectId(member_id)})
+    mongo.db.get_collection("members").delete_one(member)
+    flash("Member deleted")
+    return redirect("/dashboard/members")
+
+
 @app.route("/dashboard/trainers", methods=["GET", "POST"])
 @login_required
 def trainers():
@@ -163,7 +172,7 @@ def trainers():
         trainers = mongo.db.get_collection("trainers").find()
         list_trainers = list(trainers)
         list_trainers = list(map(serialize_mongo_doc, list_trainers))
-        return render_template("viewtrainer.html", trainers=list_trainers)
+        return render_template("viewtrainers.html", trainers=list_trainers)
     elif request.method == "POST":
         new_trainer = {
             "name": request.form["name"],
@@ -199,7 +208,7 @@ def singleTrainer(trainer_id):
     if trainer is None:
         return {"message": "Trainer not found"}, 404
     if request.method == "GET":
-        return serialize_mongo_doc(trainer)
+        return render_template("viewtrainer.html", trainer=trainer)
     elif request.method == "PUT":
         updated_trainer = {
             "name": request.form["name"],
@@ -218,17 +227,51 @@ def singleTrainer(trainer_id):
         abort(405)
 
 
+@app.route("/dashboard/trainers/<trainer_id>/delete")
+@login_required
+def deletetrainer(trainer_id):
+    trainer = mongo.db.get_collection("trainers").find_one(
+        {"_id": ObjectId(trainer_id)}
+    )
+    mongo.db.get_collection("trainers").delete_one(trainer)
+    flash("Trainer deleted")
+    return redirect("/dashboard/trainers")
+
+
+def addTrainer(classInfo):
+    trainer = mongo.db.get_collection("trainers").find_one(
+        {"_id": classInfo["trainer_id"]}
+    )
+    classInfo["trainer"] = trainer["name"]
+    return classInfo
+
+
+def addMember(classInfo):
+    print(classInfo)
+    member = mongo.db.get_collection("members").find_one(
+        {"_id": classInfo["member_id"]}
+    )
+    classInfo["member"] = member["name"]
+    return classInfo
+
+
 @app.route("/dashboard/classes", methods=["GET", "POST"])
 def classes():
     classes = mongo.db.get_collection("classes").find()
     trainers = mongo.db.trainers.find()
-    list_trainers = list(map(serialize_mongo_doc, list(trainers)))
+    list_trainers = list(
+        map(serialize_mongo_doc, list(trainers))
+    )  # i think it is of no use
     if request.method == "GET":
+
         list_classes = list(classes)
         list_classes = list(map(serialize_mongo_doc, list_classes))
-        return render_template(
-            "viewclasses.html", classes=list_classes, trainers=list_trainers
-        )
+        # for classes in list_classes:
+        #     if classes["trainer_id"]:
+        #         mongo.db.get_collection("classes").delete_one(classes)
+        #         return redirect("/dashboard/classes")
+        list_classes = list(map(addTrainer, list_classes))
+        return render_template("viewclasses.html", classes=list_classes)
     elif request.method == "POST":
         name = request.form.get("name")
         schedule = request.form.get("schedule")
@@ -252,6 +295,22 @@ def addclasses():
     trainers = mongo.db.trainers.find()
     list_trainers = list(map(serialize_mongo_doc, list(trainers)))
     return render_template("addclass.html", trainers=list_trainers)
+
+
+@app.route("/dashboard/classes/<class_id>", methods=["GET"])
+def viewclass(class_id):
+    classes = mongo.db.get_collection("classes").find_one({"_id": ObjectId(class_id)})
+    classes = addTrainer(classes)
+    return render_template("viewclass.html", classes=classes)
+
+
+@app.route("/dashboard/classes/<class_id>/delete")
+def removeclasses(class_id):
+    classes = mongo.db.get_collection("classes").find_one({"_id": ObjectId(class_id)})
+    mongo.db.get_collection("classes").delete_one(classes)
+    flash("Class deleted")
+    return redirect("/dashboard/classes")
+
 
 @app.route("/dashboard/equipments", methods=["GET"])
 @login_required
@@ -279,6 +338,46 @@ def singleequipment(equipment_id):
         flash("Equipment Not found")
         return redirect("/dashboard/equipments")
     return serialize_mongo_doc(equipement)
+
+
+@app.route("/dashboard/payments", methods=["GET", "POST"])
+@login_required
+def payments():
+    payments = mongo.db.get_collection("payment").find()
+    if payments is None:
+        flash("NO payment history")
+        return redirect("/dashboard/payments/add")
+    elif request.method == "GET":
+        list_payments = list(payments)
+        list_payments = list(map(serialize_mongo_doc, list_payments))
+        list_payments = list(map(addMember, list_payments))
+        print(list_payments)
+        return render_template("payments.html", payments=list_payments)
+    elif request.method == "POST":
+        member_id = request.form.get("member_id")
+        amount = request.form.get("amount")
+        paydate = request.form.get("paydate")
+        paymethod = request.form.get("paymethod")
+
+        new_payment = {
+            "member_id": ObjectId(member_id),
+            "amount": amount,
+            "paydate": paydate,
+            "paymethod": paymethod,
+        }
+        paydoc = mongo.db.get_collection("payment").insert_one(new_payment)
+        flash("Payment added")
+        return redirect("/dashboard/payments")
+    else:
+        abort(405)
+
+
+@app.route("/dashboard/payments/add")
+@login_required
+def addpayments():
+    members = mongo.db.members.find()
+    members = list(map(serialize_mongo_doc, list(members)))
+    return render_template("addpayment.html", members=members)
 
 
 if __name__ == "__main__":

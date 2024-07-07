@@ -1,0 +1,52 @@
+{% extends 'dashboard.html' %}
+{% block styles %}
+<link rel="stylesheet" href="{{url_for('static', filename='styles/viewmember.css')}}">
+{% endblock %}
+{% block main %}
+<h2>Member Information</h2>
+<table class="member-table" cellpadding=5 cellspacing=5 border="2px">
+    <thead>
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Name</strong></td>
+            <td>{{member['name']}}</td>
+        </tr>
+        <tr>
+            <td><strong>Email</strong></td>
+            <td>{{member['email']}}</td>
+        </tr>
+        <tr>
+            <td><strong>Phone Number</strong></td>
+            <td>{{member['phno']}}</td>
+        </tr>
+        <tr>
+            <td><strong>Date of Birth</strong></td>
+            <td>{{member['dob']}}</td>
+        </tr>
+        <tr>
+
+            <td><strong>Membership Type</strong></td>
+
+            <td>{{member['type']}}</td>
+        </tr>
+        <tr>
+            <td><strong>Join Date</strong></td>
+            <td>{{member['joindate']}}</td>
+        </tr>
+        <tr>
+            <td><strong>Expiry Date</strong></td>
+            <td>{{member['expirydate']}}</td>
+        </tr>
+
+    </tbody>
+</table>
+
+<a class="remove-link" href="/dashboard/members/{{member['_id']}}/delete"><button type="submit">Remove
+        Member</button></a>
+{% endblock %}

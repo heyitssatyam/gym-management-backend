@@ -1,0 +1,45 @@
+{% extends 'dashboard.html' %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/viewmember.css') }}">
+{% endblock %}
+
+{% block main %}
+
+<h2>Payments</h2>
+<small>Here's the list of Payments</small>
+<table class="member-table" cellpadding=5 cellspacing=5 border="2px">
+    <thead>
+        <tr>
+            <th>
+                Member name
+            </th>
+            <th>
+                Amount
+            </th>
+            <th>
+                Payment Date
+            </th>
+            <th>
+                Payment Method
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for payment in payments %}
+        <tr>
+            <td>{{payment['member']}}</td>
+
+
+            <td>{{payment['amount']}}</td>
+
+            <td>{{payment['paydate']}}</td>
+
+            <td>{{payment['paymethod']}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

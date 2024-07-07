@@ -15,15 +15,15 @@
     </div>
     <div class="form-group">
         <label for="date">Schedule:</label>
-        <input type="date" name="date" id="date" placeholder="Enter class date" required>
+        <input type="date" name="schedule" id="schedule" placeholder="Enter class date" required>
     </div>
     <div class="form-group">
         <label for="duration">Duration:</label>
         <input type="text" name="duration" id="duration" placeholder="Enter class duration" required>
     </div>
     <div class="form-group">
-        <label for="type">Trainer:</label>
-        <select name="type" id="type">
+        <label for="trainer_id">Trainer:</label>
+        <select name="trainer_id" id="trainer_id">
             {% for trainer in trainers %}
             <option value="{{trainer['_id']}}">{{trainer['name']}} - {{trainer['speciality']}} </option>
             {% endfor %}
