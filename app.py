@@ -160,7 +160,9 @@ def singleMember(member_id):
 @login_required
 def deletemember(member_id):
     member = mongo.db.get_collection("members").find_one({"_id": ObjectId(member_id)})
+    mongo.db.get_collection("removed").insert_one(member)
     mongo.db.get_collection("members").delete_one(member)
+
     flash("Member deleted")
     return redirect("/dashboard/members")
 
@@ -233,6 +235,7 @@ def deletetrainer(trainer_id):
     trainer = mongo.db.get_collection("trainers").find_one(
         {"_id": ObjectId(trainer_id)}
     )
+    mongo.db.get_collection("removed").insert_one(trainer)
     mongo.db.get_collection("trainers").delete_one(trainer)
     flash("Trainer deleted")
     return redirect("/dashboard/trainers")
@@ -313,6 +316,7 @@ def viewclass(class_id):
 @app.route("/dashboard/classes/<class_id>/delete")
 def removeclasses(class_id):
     classes = mongo.db.get_collection("classes").find_one({"_id": ObjectId(class_id)})
+    mongo.db.get_collection("removed").insert_one(classes)
     mongo.db.get_collection("classes").delete_one(classes)
     flash("Class deleted")
     return redirect("/dashboard/classes")
