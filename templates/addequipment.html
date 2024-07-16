@@ -1,0 +1,17 @@
+{% extends 'dashboard.html' %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/addequipments.css') }}">
+{% endblock %}
+{% block main %}
+<title>Upload new File</title>
+<h1>Upload new File</h1>
+<form action="/dashboard/equipments/add" method=post enctype=multipart/form-data>
+  <label for="name">Equipment Name</label>
+  <input type="text" name="name" id="name">
+  <label for="type">Equipment Type</label>
+  <input type="text" name="type" id="type">
+  <input type=file name=file>
+  <input type=submit value=Upload>
+</form>
+
+{% endblock %}

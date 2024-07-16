@@ -100,6 +100,10 @@ header {
     color: #162938;
 }
 
+.navigation .btnLogout-popup:hover {
+    background: #fff;
+    color: #162938;
+}
 
 
 .hidden {

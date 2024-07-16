@@ -1,37 +1,34 @@
-from flask import (
-    Flask,
-    request,
-    jsonify,
-    abort,
-    render_template,
-    session,
-    redirect,
-    flash,
-)
+import os
+import requests
+from flask import Flask, request, abort, render_template, session, redirect, flash
+
 from flask_session import Session
 from flask_pymongo import PyMongo
-from secrets_1 import MONGODB_URI, JWT_SECRET_KEY
+from secrets_1 import MONGODB_URI
 from hashlib import sha256
 
 from helpers import serialize_mongo_doc
 from bson.objectid import ObjectId
-from datetime import timedelta, datetime
 from flask_cors import CORS
 from functools import wraps
 
-
+UPLOAD_FOLDER = "./static"
+ALLOWED_EXTENTIONS = {"png", "jpeg", "jpg", "webp"}
 app = Flask(__name__, static_folder="./static")
 CORS(app, supports_credentials=True)
 
 app.config["MONGO_URI"] = MONGODB_URI
-app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
 app.config["SESSION_PERMANANT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=1)
-app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
 
 mongo = PyMongo(app)
 Session(app)
+
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENTIONS
 
 
 def login_required(f):
@@ -336,6 +333,48 @@ def allequipments():
         return render_template("equipments.html", equipments=list_equipments)
     else:
         abort(405)
+
+
+@app.route("/dashboard/equipments/add", methods=["GET", "POST"])
+@login_required
+def upload_file():
+    if request.method == "POST":
+        # check if the post request has the file part
+        if "file" not in request.files:
+            flash("No file part")
+            return redirect(request.url)
+        file = request.files["file"]
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == "":
+            flash("No selected file")
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            payload = {
+                "type": "image",
+                "title": f"{request.form.get('name')}-GYM-EQUIPMENT",
+            }
+            files = [("image", (file.filename, file.stream, file.mimetype))]
+            headers = {"Authorization": "Client-ID 09ebcd2cb3c4cfc"}
+            url = "https://api.imgur.com/3/image"
+            resp = requests.post(url, headers=headers, data=payload, files=files)
+            if not resp.ok:
+                flash("Unable to upload image. Please try again later.")
+                return redirect("/dashboard/equipments/add")
+            doc = {
+                "name": request.form.get("name"),
+                "type": request.form.get("type"),
+                "url": resp.json()["data"]["link"],
+            }
+            mongo.db.equipments.insert_one(doc)
+            return redirect("/dashboard/equipments")
+    return render_template("addequipment.html")
+
+
+@app.route("/dashboard/equipments/<equipment_id>/remove")
+def remove_equipment(equipment_id):
+    mongo.db.get_collection("equipments").delete_one({"_id": ObjectId(equipment_id)})
+    return redirect("/dashboard/equipments")
 
 
 @app.route("/dashboard/equipments/<int:equipment_id>", methods=["GET"])

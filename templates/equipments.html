@@ -12,7 +12,8 @@
     <div class="img-desc">
         <p class="bold">{{equipment["name"]}}</p>
         <p><small>Type - {{equipment["type"]}} </small></p>
-        <p><small>Equipment ID - {{equipment["id"]}}</small></p>
+        <p><small>Equipment ID - {{equipment["_id"]}}</small></p>
+        <a class="remove-equipment" href="/dashboard/equipments/{{equipment['_id']}}/remove"><button class="remove-btn">Remove</button></a>
     </div>
 </div>
 
