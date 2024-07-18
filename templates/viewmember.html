@@ -43,10 +43,25 @@
             <td><strong>Expiry Date</strong></td>
             <td>{{member['expirydate']}}</td>
         </tr>
+        <tr>
+            <td><strong>Trainer Name:</strong></td>
+            <td>{{ trainer['name'] | default('-') }}</td>
+        </tr>
+        <tr>
+            <td><strong>Class Name:</strong></td>
+            <td>{{ classes['name'] | default('-')}}</td>
+        </tr>
 
     </tbody>
 </table>
+<div class="btn-container">
+    <a href="/dashboard/members/{{member['_id']}}/add-trainer-to-member"><button type="button" class="add-trainer">Add
+            Trainer</button></a>
+    <a href="/dashboard/members/{{member['_id']}}/add-class-to-member"><button type="button" class="add-class">Add
+            class</button></a>
 
-<a class="remove-link" href="/dashboard/members/{{member['_id']}}/delete"><button type="submit">Remove
-        Member</button></a>
+
+    <a class="remove-link" href="/dashboard/members/{{member['_id']}}/delete"><button type="submit">Remove
+            Member</button></a>
+</div>
 {% endblock %}

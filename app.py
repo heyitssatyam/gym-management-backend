@@ -1,4 +1,3 @@
-import os
 import requests
 from flask import Flask, request, abort, render_template, session, redirect, flash
 
@@ -102,7 +101,10 @@ def members():
             "type": request.form["type"],
             "joindate": request.form["joindate"],
             "expirydate": request.form["expirydate"],
+            "trainer": None,
+            "classes": None,
         }
+
         other_members = mongo.db.get_collection("members").find(
             {"phno": new_member["phno"]}
         )
@@ -123,32 +125,90 @@ def addmembers():
     return render_template("addmembers.html")
 
 
-@app.route("/dashboard/members/<member_id>", methods=["GET", "PUT", "DELETE"])
+@app.route("/dashboard/members/<member_id>", methods=["GET", "DELETE"])
 @login_required
 def singleMember(member_id):
     member = mongo.db.get_collection("members").find_one({"_id": ObjectId(member_id)})
+    if member["trainer"] == None:
+        trainer = None
+    else:
+        trainer = mongo.db.get_collection("trainers").find_one(
+            {"_id": ObjectId(member["trainer"])}
+        )
+    if member["classes"] == None:
+        classes = None
+    else:
+        classes = mongo.db.get_collection("classes").find_one(
+            {"_id": ObjectId(member["classes"])}
+        )
     if member is None:
         return {"message": "Member not found"}, 404
     if request.method == "GET":
-        return render_template("viewmember.html", member=member)
-    elif request.method == "PUT":
-        updated_member = {
-            "name": request.form["name"],
-            "dob": request.form["dob"],
-            "address": request.form["address"],
-            "phno": request.form["phno"],
-            "email": request.form["email"],
-            "type": request.form["type"],
-            "joindate": request.form["joindate"],
-            "expirydate": request.form["expirydate"],
-        }
-        mongo.db.get_collection("members").update_one(
-            {"_id": ObjectId(member_id)}, {"$set": updated_member}
+        return render_template(
+            "viewmember.html", member=member, trainer=trainer, classes=classes
         )
-        return {"message": "Updated Successfully"}
-    elif request.method == "DELETE":
-        mongo.db.get_collection("members").delete_one({"_id": ObjectId(member_id)})
-        return {"members": "Member deleted"}
+    # elif request.method == "PUT":
+    #     updated_member = {
+    #         "name": request.form["name"],
+    #         "dob": request.form["dob"],
+    #         "address": request.form["address"],
+    #         "phno": request.form["phno"],
+    #         "email": request.form["email"],
+    #         "type": request.form["type"],
+    #         "joindate": request.form["joindate"],
+    #         "expirydate": request.form["expirydate"],
+    #     }
+    #     mongo.db.get_collection("members").update_one(
+    #         {"_id": ObjectId(member_id)}, {"$set": updated_member}
+    #     )
+    #     return {"message": "Updated Successfully"}
+    else:
+        abort(405)
+
+
+@app.route(
+    "/dashboard/members/<member_id>/add-trainer-to-member", methods=["GET", "POST"]
+)
+@login_required
+def addTrainerToMember(member_id):
+    member = mongo.db.get_collection("members").find_one({"_id": ObjectId(member_id)})
+    trainers = mongo.db.get_collection("trainers").find()
+    list_trainers = list(trainers)
+    list_trainers = list(map(serialize_mongo_doc, list_trainers))
+    if request.method == "GET":
+        return render_template(
+            "addTrainerToMember.html", trainers=list_trainers, member=member
+        )
+    if request.method == "POST":
+        trainer_id = request.form.get("trainer")
+        doc = mongo.db.get_collection("members").update_one(
+            {"_id": ObjectId(member_id)}, {"$set": {"trainer": ObjectId(trainer_id)}}
+        )
+        flash("Trainer seleted succesfully")
+        return redirect(f"/dashboard/members/{member_id}")
+    return redirect("/dashboard/members")
+
+
+@app.route(
+    "/dashboard/members/<member_id>/add-class-to-member", methods=["GET", "POST"]
+)
+@login_required
+def addClassToMember(member_id):
+    member = mongo.db.get_collection("members").find_one({"_id": ObjectId(member_id)})
+    classes = mongo.db.get_collection("classes").find()
+    list_classes = list(classes)
+    list_classes = list(map(serialize_mongo_doc, list_classes))
+    if request.method == "GET":
+        return render_template(
+            "addClassToMember.html", member=member, classes=list_classes
+        )
+    if request.method == "POST":
+        class_id = request.form.get("classes")
+        doc = mongo.db.get_collection("members").update_one(
+            {"_id": ObjectId(member_id)}, {"$set": {"classes": ObjectId(class_id)}}
+        )
+        flash("Class added successfully")
+        return redirect(f"/dashboard/members/{member_id}")
     else:
         abort(405)
 

@@ -1,0 +1,18 @@
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/addmembers.css') }}">
+{% endblock %}
+
+{% block main %}
+<h1>Select Class:</h1>
+<form action="/dashboard/members/{{member['_id']}}/add-class-to-member" method="post">
+    <div class="form-group">
+        <label for="classes">Name:</label>
+        <select name="classes" id="class">
+            {% for class in classes %}
+            <option value="{{class['_id']}}">{{class['name']}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}
