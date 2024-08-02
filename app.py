@@ -59,11 +59,9 @@ def about():
 
 @app.route("/login", methods=["POST"])
 def login():
-    print(request.form)
     email = request.form["email"]
     password = request.form["password"]
     password_hash = sha256(password.encode("utf-8")).hexdigest()
-    print(password_hash)
     doc = mongo.db.get_collection("users").find_one(
         {"email": email, "password": password_hash}
     )
@@ -147,21 +145,6 @@ def singleMember(member_id):
         return render_template(
             "viewmember.html", member=member, trainer=trainer, classes=classes
         )
-    # elif request.method == "PUT":
-    #     updated_member = {
-    #         "name": request.form["name"],
-    #         "dob": request.form["dob"],
-    #         "address": request.form["address"],
-    #         "phno": request.form["phno"],
-    #         "email": request.form["email"],
-    #         "type": request.form["type"],
-    #         "joindate": request.form["joindate"],
-    #         "expirydate": request.form["expirydate"],
-    #     }
-    #     mongo.db.get_collection("members").update_one(
-    #         {"_id": ObjectId(member_id)}, {"$set": updated_member}
-    #     )
-    #     return {"message": "Updated Successfully"}
     else:
         abort(405)
 
@@ -310,7 +293,6 @@ def addTrainer(classInfo):
 
 
 def addMember(classInfo):
-    print(classInfo)
     member = mongo.db.get_collection("members").find_one(
         {"_id": classInfo["member_id"]}
     )
@@ -460,7 +442,6 @@ def payments():
         list_payments = list(payments)
         list_payments = list(map(serialize_mongo_doc, list_payments))
         list_payments = list(map(addMember, list_payments))
-        print(list_payments)
         return render_template("payments.html", payments=list_payments)
     elif request.method == "POST":
         member_id = request.form.get("member_id")
